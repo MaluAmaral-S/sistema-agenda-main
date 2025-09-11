@@ -97,6 +97,11 @@ const Login = () => {
     if (!registerData.businessName) {
       newErrors.businessName = 'Nome da empresa é obrigatório';
     }
+
+    // Validação de telefone (opcional, mas se preenchido, valida o formato)
+    if (registerData.phone && registerData.phone.length > 0 && !/^\(\d{2}\)\s\d{4,5}-\d{4}$/.test(registerData.phone)) {
+      newErrors.phone = 'Formato de telefone inválido.';
+    }
     
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -286,11 +291,20 @@ const Login = () => {
                   <Input
                     id="register-phone"
                     type="tel"
+                    maxLength="15"
                     value={registerData.phone}
-                    onChange={(e) => setRegisterData({ ...registerData, phone: e.target.value })}
+                    onChange={(e) => {
+                      let value = e.target.value.replace(/\D/g, '');
+                      value = value.replace(/^(\d{2})(\d)/g, '($1) $2');
+                      value = value.replace(/(\d)(\d{4})$/, '$1-$2');
+                      setRegisterData({ ...registerData, phone: value });
+                    }}
                     className="mt-1 bg-white/20 border-white/30 text-white placeholder-white/60 focus:border-white focus:ring-white"
                     placeholder="(11) 99999-9999"
                   />
+                  {errors.phone && (
+                    <p className="mt-1 text-sm text-red-300">{errors.phone}</p>
+                  )}
                 </div>
               </div>
 

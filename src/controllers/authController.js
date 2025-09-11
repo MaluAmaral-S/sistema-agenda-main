@@ -8,9 +8,28 @@ const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 
 exports.register = async (req, res) => {
-  const { name, businessName, businessType = 'Geral', email, password } = req.body;
+  const { name, businessName, businessType = 'Geral', email, password, phone } = req.body;
   try {
-    // ... (seu código de validação existente) ...
+    // --- INÍCIO DA VALIDAÇÃO ---
+    const errors = [];
+    if (!name || validator.isEmpty(name.trim())) {
+      errors.push('O nome é obrigatório.');
+    }
+    if (!businessName || validator.isEmpty(businessName.trim())) {
+      errors.push('O nome da empresa é obrigatório.');
+    }
+    if (!email || !validator.isEmail(email)) {
+      errors.push('Forneça um e-mail válido.');
+    }
+    if (!password || !validator.isLength(password, { min: 6 })) {
+      errors.push('A senha deve ter pelo menos 6 caracteres.');
+    }
+
+    if (errors.length > 0) {
+      // Usando a primeira mensagem de erro para consistência com outros retornos
+      return res.status(400).json({ message: errors[0] });
+    }
+    // --- FIM DA VALIDAÇÃO ---
 
     const userExists = await User.findOne({ where: { email } });
     if (userExists) {
@@ -23,6 +42,7 @@ exports.register = async (req, res) => {
       businessType,
       email,
       password,
+      phone: phone || null, // Salva o telefone ou null se não for fornecido
     });
 
     // --- INÍCIO DA MODIFICAÇÃO ---
