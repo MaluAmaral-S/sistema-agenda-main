@@ -9,7 +9,8 @@ export const API_ROUTES = {
     LOGOUT: '/auth/logout',
     FORGOT_PASSWORD: '/auth/forgot-password',
     RESET_PASSWORD: '/auth/reset-password',
-    VERIFY_CODE: '/auth/verify-code'
+    VERIFY_CODE: '/auth/verify-code',
+    PROFILE: '/auth/profile'
   },
   SERVICES: {
     BASE: '/servicos',

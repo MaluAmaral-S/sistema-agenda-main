@@ -215,9 +215,15 @@ export const AuthProvider = ({ children }) => {
   };
   
   // Função para atualizar dados do usuário
-  const updateUser = (userData) => {
-    authService.updateUserData({ ...state.user, ...userData });
-    dispatch({ type: AUTH_ACTIONS.UPDATE_USER, payload: userData });
+  const updateProfile = async (profileData) => {
+    try {
+      const response = await authService.updateProfile(profileData);
+      dispatch({ type: AUTH_ACTIONS.UPDATE_USER, payload: response.user });
+      return response;
+    } catch (error) {
+      // O erro será lançado e pode ser capturado no componente
+      throw error;
+    }
   };
   
   // Função para limpar erro
@@ -240,7 +246,7 @@ export const AuthProvider = ({ children }) => {
     forgotPassword,
     verifyCode,
     resetPassword,
-    updateUser,
+    updateProfile,
     clearError
   };
   

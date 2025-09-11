@@ -20,11 +20,11 @@ const Login = () => {
   });
   
   const [registerData, setRegisterData] = useState({
-    name: '',
+    ownerName: '',
+    businessName: '',
     email: '',
     password: '',
     confirmPassword: '',
-    businessName: '',
     phone: ''
   });
   
@@ -71,9 +71,13 @@ const Login = () => {
   // Validação do formulário de registro
   const validateRegister = () => {
     const newErrors = {};
-    
-    if (!registerData.name) {
-      newErrors.name = 'Nome é obrigatório';
+
+    if (!registerData.ownerName) {
+      newErrors.ownerName = 'O nome do dono é obrigatório.';
+    }
+
+    if (!registerData.businessName) {
+      newErrors.businessName = 'O nome da empresa é obrigatório.';
     }
     
     if (!registerData.email) {
@@ -81,26 +85,19 @@ const Login = () => {
     } else if (!/\S+@\S+\.\S+/.test(registerData.email)) {
       newErrors.email = 'Email inválido';
     }
+
+    if (!registerData.phone || !/^\(\d{2}\)\s\d{4,5}-\d{4}$/.test(registerData.phone)) {
+      newErrors.phone = 'Telefone inválido. Use (XX) XXXXX-XXXX.';
+    }
     
     if (!registerData.password) {
       newErrors.password = 'Senha é obrigatória';
-    } else if (registerData.password.length < 6) {
-      newErrors.password = 'Senha deve ter pelo menos 6 caracteres';
+    } else if (registerData.password.length < 8) {
+      newErrors.password = 'A senha deve ter pelo menos 8 caracteres.';
     }
     
-    if (!registerData.confirmPassword) {
-      newErrors.confirmPassword = 'Confirmação de senha é obrigatória';
-    } else if (registerData.password !== registerData.confirmPassword) {
-      newErrors.confirmPassword = 'Senhas não coincidem';
-    }
-    
-    if (!registerData.businessName) {
-      newErrors.businessName = 'Nome da empresa é obrigatório';
-    }
-
-    // Validação de telefone (opcional, mas se preenchido, valida o formato)
-    if (registerData.phone && registerData.phone.length > 0 && !/^\(\d{2}\)\s\d{4,5}-\d{4}$/.test(registerData.phone)) {
-      newErrors.phone = 'Formato de telefone inválido.';
+    if (registerData.password !== registerData.confirmPassword) {
+      newErrors.confirmPassword = 'As senhas não coincidem.';
     }
     
     setErrors(newErrors);
@@ -268,25 +265,59 @@ const Login = () => {
             <form onSubmit={handleRegister} className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="register-name" className="text-white">
-                    Nome *
+                  <Label htmlFor="register-owner-name" className="text-white">
+                    Seu Nome *
                   </Label>
                   <Input
-                    id="register-name"
+                    id="register-owner-name"
                     type="text"
-                    value={registerData.name}
-                    onChange={(e) => setRegisterData({ ...registerData, name: e.target.value })}
+                    value={registerData.ownerName}
+                    onChange={(e) => setRegisterData({ ...registerData, ownerName: e.target.value })}
                     className="mt-1 bg-white/20 border-white/30 text-white placeholder-white/60 focus:border-white focus:ring-white"
-                    placeholder="Seu nome"
+                    placeholder="Seu nome completo"
                   />
-                  {errors.name && (
-                    <p className="mt-1 text-sm text-red-300">{errors.name}</p>
+                  {errors.ownerName && (
+                    <p className="mt-1 text-sm text-red-300">{errors.ownerName}</p>
                   )}
                 </div>
+                <div>
+                  <Label htmlFor="register-business" className="text-white">
+                    Nome da Empresa *
+                  </Label>
+                  <Input
+                    id="register-business"
+                    type="text"
+                    value={registerData.businessName}
+                    onChange={(e) => setRegisterData({ ...registerData, businessName: e.target.value })}
+                    className="mt-1 bg-white/20 border-white/30 text-white placeholder-white/60 focus:border-white focus:ring-white"
+                    placeholder="Sua Empresa"
+                  />
+                  {errors.businessName && (
+                    <p className="mt-1 text-sm text-red-300">{errors.businessName}</p>
+                  )}
+                </div>
+              </div>
 
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="register-email" className="text-white">
+                    Email *
+                  </Label>
+                  <Input
+                    id="register-email"
+                    type="email"
+                    value={registerData.email}
+                    onChange={(e) => setRegisterData({ ...registerData, email: e.target.value })}
+                    className="mt-1 bg-white/20 border-white/30 text-white placeholder-white/60 focus:border-white focus:ring-white"
+                    placeholder="seu@email.com"
+                  />
+                  {errors.email && (
+                    <p className="mt-1 text-sm text-red-300">{errors.email}</p>
+                  )}
+                </div>
                 <div>
                   <Label htmlFor="register-phone" className="text-white">
-                    Telefone
+                    Telefone *
                   </Label>
                   <Input
                     id="register-phone"
@@ -308,40 +339,6 @@ const Login = () => {
                 </div>
               </div>
 
-              <div>
-                <Label htmlFor="register-email" className="text-white">
-                  Email *
-                </Label>
-                <Input
-                  id="register-email"
-                  type="email"
-                  value={registerData.email}
-                  onChange={(e) => setRegisterData({ ...registerData, email: e.target.value })}
-                  className="mt-1 bg-white/20 border-white/30 text-white placeholder-white/60 focus:border-white focus:ring-white"
-                  placeholder="seu@email.com"
-                />
-                {errors.email && (
-                  <p className="mt-1 text-sm text-red-300">{errors.email}</p>
-                )}
-              </div>
-
-              <div>
-                <Label htmlFor="register-business" className="text-white">
-                  Nome da Empresa *
-                </Label>
-                <Input
-                  id="register-business"
-                  type="text"
-                  value={registerData.businessName}
-                  onChange={(e) => setRegisterData({ ...registerData, businessName: e.target.value })}
-                  className="mt-1 bg-white/20 border-white/30 text-white placeholder-white/60 focus:border-white focus:ring-white"
-                  placeholder="Nome da sua empresa"
-                />
-                {errors.businessName && (
-                  <p className="mt-1 text-sm text-red-300">{errors.businessName}</p>
-                )}
-              </div>
-
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="register-password" className="text-white">
@@ -354,7 +351,7 @@ const Login = () => {
                       value={registerData.password}
                       onChange={(e) => setRegisterData({ ...registerData, password: e.target.value })}
                       className="bg-white/20 border-white/30 text-white placeholder-white/60 focus:border-white focus:ring-white pr-10"
-                      placeholder="Mín. 6 caracteres"
+                      placeholder="Mín. 8 caracteres"
                     />
                     <button
                       type="button"

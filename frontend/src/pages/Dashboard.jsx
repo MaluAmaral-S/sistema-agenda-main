@@ -16,6 +16,7 @@ import {
   Copy,
   LogOut,
   Crown,
+  User,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -96,6 +97,13 @@ const Dashboard = () => {
               </div>
             </div>
             <div className="flex items-center space-x-3">
+              <button
+                onClick={() => navigate("/conta")}
+                className="bg-white/20 hover:bg-white/30 text-white font-medium py-2 px-4 rounded-lg transition-all duration-200 flex items-center"
+              >
+                <User className="w-4 h-4 mr-2" />
+                Minha Conta
+              </button>
               <button
                 onClick={() => navigate("/planos")}
                 className="bg-white/20 hover:bg-white/30 text-white font-medium py-2 px-4 rounded-lg transition-all duration-200 flex items-center"

@@ -14,6 +14,7 @@ import Plans from './pages/Plans';
 import Booking from './pages/Booking';
 import AppointmentsDemo from './pages/AppointmentsDemo';
 import ForgotPassword from './pages/ForgotPassword';
+import AccountManagement from './pages/AccountManagement';
 
 
 
@@ -51,6 +52,12 @@ function App() {
             <Route path="/horarios" element={
               <ProtectedRoute>
                 <BusinessHours />
+              </ProtectedRoute>
+            } />
+
+            <Route path="/conta" element={
+              <ProtectedRoute>
+                <AccountManagement />
               </ProtectedRoute>
             } />
             
