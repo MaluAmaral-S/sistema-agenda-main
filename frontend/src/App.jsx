@@ -33,7 +33,7 @@ function App() {
             <Route path="/recuperar-senha" element={<ForgotPassword />} />
             <Route path="/planos" element={<Plans />} />
             <Route path="/demo" element={<AppointmentsDemo />} />
-            {/* A rota mais específica (:businessSlug) deve vir antes da genérica. */}
+            {/* A rota mais específica (:businessSlug) deve vir antes da genérica para garantir o roteamento correto. */}
             <Route path="/agendamento/:businessSlug" element={<Booking />} />
             <Route path="/agendamento" element={<Booking />} />
             

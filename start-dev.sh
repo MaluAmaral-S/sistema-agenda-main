@@ -17,19 +17,20 @@ if [ ! -d "frontend/node_modules" ]; then
     exit 1
 fi
 
-# Verificar se o PostgreSQL está rodando
-if ! pgrep -x "postgres" > /dev/null; then
-    echo "⚠️  PostgreSQL não está rodando. Tentando iniciar..."
-    sudo systemctl start postgresql
-    sleep 2
+# Comentado para usar SQLite
+# # Verificar se o PostgreSQL está rodando
+# if ! pgrep -x "postgres" > /dev/null; then
+#     echo "⚠️  PostgreSQL não está rodando. Tentando iniciar..."
+#     sudo systemctl start postgresql
+#     sleep 2
     
-    if ! pgrep -x "postgres" > /dev/null; then
-        echo "❌ Não foi possível iniciar o PostgreSQL. Verifique a instalação."
-        exit 1
-    fi
-fi
+#     if ! pgrep -x "postgres" > /dev/null; then
+#         echo "❌ Não foi possível iniciar o PostgreSQL. Verifique a instalação."
+#         exit 1
+#     fi
+# fi
 
-echo "✅ PostgreSQL está rodando"
+# echo "✅ PostgreSQL está rodando"
 
 # Função para limpar processos ao sair
 cleanup() {
