@@ -182,10 +182,9 @@ const getAppointments = async (req, res) => {
 const confirmAppointment = async (req, res) => {
     try {
         const { id } = req.params;
-        const { userId } = req.user;
 
         const appointment = await Appointment.findOne({
-            where: { id, userId },
+            where: { id, userId: req.user.id },
             include: [{ model: Service, as: 'service' }]
         });
 
@@ -204,10 +203,9 @@ const confirmAppointment = async (req, res) => {
 const rejectAppointment = async (req, res) => {
     try {
         const { id } = req.params;
-        const { userId } = req.user;
         const { rejectionReason } = req.body;
 
-        const appointment = await Appointment.findOne({ where: { id, userId } });
+        const appointment = await Appointment.findOne({ where: { id, userId: req.user.id } });
         if (!appointment) return res.status(404).json({ error: 'Agendamento não encontrado' });
         if (appointment.status !== 'pending') return res.status(400).json({ error: 'Agendamento não está pendente' });
 
@@ -223,11 +221,10 @@ const rejectAppointment = async (req, res) => {
 const rescheduleAppointment = async (req, res) => {
     try {
         const { id } = req.params;
-        const { userId } = req.user;
         const { suggestedDate, suggestedTime } = req.body;
 
         const appointment = await Appointment.findOne({
-            where: { id, userId },
+            where: { id, userId: req.user.id },
             include: [{ model: Service, as: 'service' }]
         });
         if (!appointment) return res.status(404).json({ error: 'Agendamento não encontrado' });
@@ -237,14 +234,14 @@ const rescheduleAppointment = async (req, res) => {
         const endMinutes = startMinutes + appointment.service.duracao_minutos;
         const suggestedEndTime = minutesToTime(endMinutes);
 
-        const businessHours = await BusinessHours.findOne({ where: { userId } });
+        const businessHours = await BusinessHours.findOne({ where: { userId: req.user.id } });
         const dayOfWeek = new Date(suggestedDate).getDay();
 
         if (!isWithinBusinessHours(businessHours.businessHours, dayOfWeek, suggestedTime, suggestedEndTime)) {
             return res.status(400).json({ error: 'Horário sugerido fora do funcionamento da empresa' });
         }
 
-        const hasConflict = await hasTimeConflict(userId, suggestedDate, suggestedTime, suggestedEndTime, id);
+        const hasConflict = await hasTimeConflict(req.user.id, suggestedDate, suggestedTime, suggestedEndTime, id);
         if (hasConflict) {
             return res.status(400).json({ error: 'Horário sugerido não disponível' });
         }

@@ -19,13 +19,8 @@ const authenticateToken = async (req, res, next) => {
       return res.status(401).json({ error: 'Usuário não encontrado' });
     }
 
-    // Adicionar informações do usuário à requisição
-    req.user = {
-      userId: user.id, // Manter userId aqui para consistência no resto do app
-      email: user.email,
-      name: user.name,
-      businessName: user.businessName
-    };
+    // Adicionar o objeto de usuário completo do Sequelize à requisição
+    req.user = user;
 
     next();
   } catch (error) {
