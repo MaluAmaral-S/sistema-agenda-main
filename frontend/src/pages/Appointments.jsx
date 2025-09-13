@@ -2,6 +2,9 @@ import React, { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import { apiRequest } from "../services/api";
 import toast, { Toaster } from "react-hot-toast";
+import { format } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
+import { parseDateOnlyFromAPI } from "../utils/dateUtils";
 import {
   Calendar,
   Clock,
@@ -219,14 +222,12 @@ const Appointments = () => {
     );
   };
 
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString("pt-BR", {
-      weekday: "short",
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    });
-  };
+const formatDate = (dateString) => {
+  if (!dateString) return '';
+  const date = parseDateOnlyFromAPI(dateString);
+  // Este formato exibirá a data por extenso, ex: "sábado, 12 de setembro de 2025"
+  return format(date, "EEEE, dd 'de' MMMM 'de' yyyy", { locale: ptBR });
+};
 
   const formatPrice = (price) => {
     if (!price) return "Consulte o valor";
