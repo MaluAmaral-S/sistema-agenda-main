@@ -21,6 +21,25 @@ export const parseDateFromAPI = (dateString, timeString) => {
  * @returns {Date}
  */
 export const parseDateOnlyFromAPI = (dateString) => {
-  const date = parseISO(dateString);
-  return startOfDay(date);
+  if (!dateString) return null;
+  // Adiciona 'T00:00:00' para garantir que a string seja interpretada
+  // no fuso horário local do navegador, e não como UTC.
+  // Isso corrige o bug de "um dia a menos".
+  const date = new Date(`${dateString}T00:00:00`);
+  return date;
+};
+
+/**
+ * Formata um objeto de Data do JavaScript para uma string "AAAA-MM-DD"
+ * para ser enviada para a API, respeitando o fuso horário local.
+ * Isso evita o bug de "um dia a menos" causado pelo toISOString().
+ * @param {Date} date - O objeto de Data a ser formatado.
+ * @returns {string} A data formatada como "AAAA-MM-DD".
+ */
+export const formatDateForAPI = (date) => {
+  if (!date) return '';
+  const year = date.getFullYear();
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const day = date.getDate().toString().padStart(2, '0');
+  return `${year}-${month}-${day}`;
 };

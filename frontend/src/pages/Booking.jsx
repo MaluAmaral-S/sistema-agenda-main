@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { apiRequest } from "../services/api";
+import { formatDateForAPI } from "../utils/dateUtils";
 import {
   CalendarCheck,
   Scissors,
@@ -104,7 +105,7 @@ const Booking = () => {
   const loadAvailableSlots = async () => {
     if (!selectedService || !selectedDate || !businessData) return;
     try {
-      const dateStr = selectedDate.toISOString().split("T")[0];
+      const dateStr = formatDateForAPI(selectedDate);
       
       const response = await apiRequest.get(
         `/empresa/${businessData.id}/horarios-disponiveis?serviceId=${selectedService.id}&date=${dateStr}`
@@ -131,7 +132,7 @@ const Booking = () => {
         clientName: clientData.nome,
         clientEmail: clientData.email,
         clientPhone: clientData.telefone,
-        appointmentDate: selectedDate.toISOString().split("T")[0],
+        appointmentDate: formatDateForAPI(selectedDate),
         appointmentTime: selectedTime,
       };
       await apiRequest.post(`/empresa/${businessData.id}/agendamentos`, bookingData);
