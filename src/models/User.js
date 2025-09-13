@@ -14,7 +14,7 @@ const User = sequelize.define('User', {
   },
   businessType: {
     type: DataTypes.STRING,
-    allowNull: true, // Alterado para permitir nulo, conforme a nova regra de negócio
+    allowNull: false,
   },
   email: {
     type: DataTypes.STRING,

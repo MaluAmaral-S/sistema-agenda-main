@@ -10,7 +10,6 @@ router.get('/logout', authController.logout);
 
 // Rotas de perfil (protegida)
 router.get('/profile', authController.protect, authController.getProfile);
-router.put('/profile', authController.protect, authController.updateProfile);
 
 // --- ROTAS PARA RECUPERAÇÃO DE SENHA ---
 

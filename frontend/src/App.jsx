@@ -13,8 +13,6 @@ import BusinessHours from './pages/BusinessHours';
 import Plans from './pages/Plans';
 import Booking from './pages/Booking';
 import AppointmentsDemo from './pages/AppointmentsDemo';
-import ForgotPassword from './pages/ForgotPassword';
-import AccountManagement from './pages/AccountManagement';
 
 
 
@@ -30,11 +28,10 @@ function App() {
             {/* Rotas públicas */}
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/recuperar-senha" element={<ForgotPassword />} />
             <Route path="/planos" element={<Plans />} />
             <Route path="/demo" element={<AppointmentsDemo />} />
             <Route path="/agendamento/:businessSlug" element={<Booking />} /> {/* Rota principal de agendamento */}
-            <Route path="/agendamento" element={<Booking />} />
+            {/* A rota genérica /agendamento foi removida pois não é funcional sem um businessSlug */}
             
             {/* Rotas protegidas */}
             <Route path="/painel" element={
@@ -52,12 +49,6 @@ function App() {
             <Route path="/horarios" element={
               <ProtectedRoute>
                 <BusinessHours />
-              </ProtectedRoute>
-            } />
-
-            <Route path="/conta" element={
-              <ProtectedRoute>
-                <AccountManagement />
               </ProtectedRoute>
             } />
             

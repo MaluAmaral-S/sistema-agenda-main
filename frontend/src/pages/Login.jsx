@@ -20,11 +20,11 @@ const Login = () => {
   });
   
   const [registerData, setRegisterData] = useState({
-    ownerName: '',
-    businessName: '',
+    name: '',
     email: '',
     password: '',
     confirmPassword: '',
+    businessName: '',
     phone: ''
   });
   
@@ -72,12 +72,8 @@ const Login = () => {
   const validateRegister = () => {
     const newErrors = {};
 
-    if (!registerData.ownerName) {
-      newErrors.ownerName = 'O nome do dono é obrigatório.';
-    }
-
-    if (!registerData.businessName) {
-      newErrors.businessName = 'O nome da empresa é obrigatório.';
+    if (!registerData.name) {
+      newErrors.name = 'Nome é obrigatório';
     }
     
     if (!registerData.email) {
@@ -85,19 +81,21 @@ const Login = () => {
     } else if (!/\S+@\S+\.\S+/.test(registerData.email)) {
       newErrors.email = 'Email inválido';
     }
-
-    if (!registerData.phone || !/^\(\d{2}\)\s\d{4,5}-\d{4}$/.test(registerData.phone)) {
-      newErrors.phone = 'Telefone inválido. Use (XX) XXXXX-XXXX.';
-    }
     
     if (!registerData.password) {
       newErrors.password = 'Senha é obrigatória';
-    } else if (registerData.password.length < 8) {
-      newErrors.password = 'A senha deve ter pelo menos 8 caracteres.';
+    } else if (registerData.password.length < 6) {
+      newErrors.password = 'Senha deve ter pelo menos 6 caracteres';
+    }
+
+    if (!registerData.confirmPassword) {
+      newErrors.confirmPassword = 'Confirmação de senha é obrigatória';
+    } else if (registerData.password !== registerData.confirmPassword) {
+      newErrors.confirmPassword = 'Senhas não coincidem';
     }
     
-    if (registerData.password !== registerData.confirmPassword) {
-      newErrors.confirmPassword = 'As senhas não coincidem.';
+    if (!registerData.businessName) {
+      newErrors.businessName = 'Nome da empresa é obrigatório';
     }
     
     setErrors(newErrors);
@@ -265,78 +263,69 @@ const Login = () => {
             <form onSubmit={handleRegister} className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="register-owner-name" className="text-white">
-                    Seu Nome *
+                  <Label htmlFor="register-name" className="text-white">
+                    Nome *
                   </Label>
                   <Input
-                    id="register-owner-name"
+                    id="register-name"
                     type="text"
-                    value={registerData.ownerName}
-                    onChange={(e) => setRegisterData({ ...registerData, ownerName: e.target.value })}
+                    value={registerData.name}
+                    onChange={(e) => setRegisterData({ ...registerData, name: e.target.value })}
                     className="mt-1 bg-white/20 border-white/30 text-white placeholder-white/60 focus:border-white focus:ring-white"
-                    placeholder="Seu nome completo"
+                    placeholder="Seu nome"
                   />
-                  {errors.ownerName && (
-                    <p className="mt-1 text-sm text-red-300">{errors.ownerName}</p>
+                  {errors.name && (
+                    <p className="mt-1 text-sm text-red-300">{errors.name}</p>
                   )}
                 </div>
-                <div>
-                  <Label htmlFor="register-business" className="text-white">
-                    Nome da Empresa *
-                  </Label>
-                  <Input
-                    id="register-business"
-                    type="text"
-                    value={registerData.businessName}
-                    onChange={(e) => setRegisterData({ ...registerData, businessName: e.target.value })}
-                    className="mt-1 bg-white/20 border-white/30 text-white placeholder-white/60 focus:border-white focus:ring-white"
-                    placeholder="Sua Empresa"
-                  />
-                  {errors.businessName && (
-                    <p className="mt-1 text-sm text-red-300">{errors.businessName}</p>
-                  )}
-                </div>
-              </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="register-email" className="text-white">
-                    Email *
-                  </Label>
-                  <Input
-                    id="register-email"
-                    type="email"
-                    value={registerData.email}
-                    onChange={(e) => setRegisterData({ ...registerData, email: e.target.value })}
-                    className="mt-1 bg-white/20 border-white/30 text-white placeholder-white/60 focus:border-white focus:ring-white"
-                    placeholder="seu@email.com"
-                  />
-                  {errors.email && (
-                    <p className="mt-1 text-sm text-red-300">{errors.email}</p>
-                  )}
-                </div>
                 <div>
                   <Label htmlFor="register-phone" className="text-white">
-                    Telefone *
+                    Telefone
                   </Label>
                   <Input
                     id="register-phone"
                     type="tel"
-                    maxLength="15"
                     value={registerData.phone}
-                    onChange={(e) => {
-                      let value = e.target.value.replace(/\D/g, '');
-                      value = value.replace(/^(\d{2})(\d)/g, '($1) $2');
-                      value = value.replace(/(\d)(\d{4})$/, '$1-$2');
-                      setRegisterData({ ...registerData, phone: value });
-                    }}
+                    onChange={(e) => setRegisterData({ ...registerData, phone: e.target.value })}
                     className="mt-1 bg-white/20 border-white/30 text-white placeholder-white/60 focus:border-white focus:ring-white"
                     placeholder="(11) 99999-9999"
                   />
-                  {errors.phone && (
-                    <p className="mt-1 text-sm text-red-300">{errors.phone}</p>
-                  )}
                 </div>
+              </div>
+
+              <div>
+                <Label htmlFor="register-email" className="text-white">
+                  Email *
+                </Label>
+                <Input
+                  id="register-email"
+                  type="email"
+                  value={registerData.email}
+                  onChange={(e) => setRegisterData({ ...registerData, email: e.target.value })}
+                  className="mt-1 bg-white/20 border-white/30 text-white placeholder-white/60 focus:border-white focus:ring-white"
+                  placeholder="seu@email.com"
+                />
+                {errors.email && (
+                  <p className="mt-1 text-sm text-red-300">{errors.email}</p>
+                )}
+              </div>
+
+              <div>
+                <Label htmlFor="register-business" className="text-white">
+                  Nome da Empresa *
+                </Label>
+                <Input
+                  id="register-business"
+                  type="text"
+                  value={registerData.businessName}
+                  onChange={(e) => setRegisterData({ ...registerData, businessName: e.target.value })}
+                  className="mt-1 bg-white/20 border-white/30 text-white placeholder-white/60 focus:border-white focus:ring-white"
+                  placeholder="Nome da sua empresa"
+                />
+                {errors.businessName && (
+                  <p className="mt-1 text-sm text-red-300">{errors.businessName}</p>
+                )}
               </div>
 
               <div className="grid grid-cols-2 gap-4">
@@ -351,7 +340,7 @@ const Login = () => {
                       value={registerData.password}
                       onChange={(e) => setRegisterData({ ...registerData, password: e.target.value })}
                       className="bg-white/20 border-white/30 text-white placeholder-white/60 focus:border-white focus:ring-white pr-10"
-                      placeholder="Mín. 8 caracteres"
+                      placeholder="Mín. 6 caracteres"
                     />
                     <button
                       type="button"

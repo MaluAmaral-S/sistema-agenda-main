@@ -6,7 +6,6 @@ import BusinessHours from "./BusinessHours";
 import Servicos from "./Services";
 import Planos from "./Plans";
 import Appointments from "./Appointments";
-import AccountManagement from "./AccountManagement";
 import { apiRequest } from "../services/api";
 import {
   Calendar,
@@ -125,7 +124,6 @@ const Dashboard = () => {
               { id: "servicos", label: "Serviços" },
               { id: "horarios", label: "Horários" },
               { id: "agendamentos", label: "Agendamentos" },
-              { id: "conta", label: "Minha Conta" },
             ].map((tab) => (
               <button
                 key={tab.id}
@@ -241,7 +239,6 @@ const Dashboard = () => {
         {activeTab === "servicos" && <Servicos />}
         {activeTab === "horarios" && <BusinessHours />}
         {activeTab === "agendamentos" && <Appointments />}
-        {activeTab === "conta" && <AccountManagement />}
       </main>
     </div>
   );

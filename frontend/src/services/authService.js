@@ -156,24 +156,6 @@ class AuthService {
       return true;
     }
   }
-
-  /**
-   * Atualizar perfil do usuário
-   */
-  async updateProfile(profileData) {
-    try {
-      const response = await apiRequest.put(API_ROUTES.AUTH.PROFILE, profileData);
-
-      if (response.user) {
-        // Atualiza os dados do usuário no localStorage
-        this.updateUserData(response.user);
-      }
-
-      return response;
-    } catch (error) {
-      throw error;
-    }
-  }
   
   /**
    * Renovar token se necessário

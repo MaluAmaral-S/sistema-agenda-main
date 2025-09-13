@@ -23,6 +23,9 @@ const Appointment = sequelize.define('Appointment', {
   clientName: {
     type: DataTypes.STRING,
     allowNull: false,
+    validate: {
+      notEmpty: true,
+    },
   },
   clientEmail: {
     type: DataTypes.STRING,
@@ -34,6 +37,9 @@ const Appointment = sequelize.define('Appointment', {
   clientPhone: {
     type: DataTypes.STRING,
     allowNull: false,
+    validate: {
+      notEmpty: true,
+    },
   },
   appointmentDate: {
     type: DataTypes.DATEONLY,

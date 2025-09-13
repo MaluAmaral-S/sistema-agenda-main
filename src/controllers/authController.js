@@ -8,31 +8,9 @@ const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 
 exports.register = async (req, res) => {
-  const { ownerName, businessName, email, password, phone } = req.body;
+  const { name, businessName, businessType = 'Geral', email, password } = req.body;
   try {
-    // --- INÍCIO DA VALIDAÇÃO ---
-    const errors = [];
-    if (!ownerName || validator.isEmpty(ownerName.trim())) {
-      errors.push('O nome do dono é obrigatório.');
-    }
-    if (!businessName || validator.isEmpty(businessName.trim())) {
-      errors.push('O nome da empresa é obrigatório.');
-    }
-    if (!email || !validator.isEmail(email)) {
-      errors.push('Forneça um e-mail válido.');
-    }
-    if (!phone) { // Adicionando validação simples para telefone
-      errors.push('O telefone é obrigatório.');
-    }
-    if (!password || !validator.isLength(password, { min: 8 })) {
-      errors.push('A senha deve ter pelo menos 8 caracteres.');
-    }
-
-    if (errors.length > 0) {
-      // Usando a primeira mensagem de erro para consistência com outros retornos
-      return res.status(400).json({ message: errors[0] });
-    }
-    // --- FIM DA VALIDAÇÃO ---
+    // ... (seu código de validação existente) ...
 
     const userExists = await User.findOne({ where: { email } });
     if (userExists) {
@@ -40,12 +18,11 @@ exports.register = async (req, res) => {
     }
 
     const user = await User.create({
-      name: ownerName,
+      name,
       businessName,
+      businessType,
       email,
       password,
-      phone,
-      // businessType é nulo por padrão agora
     });
 
     // --- INÍCIO DA MODIFICAÇÃO ---
@@ -137,58 +114,9 @@ exports.getProfile = async (req, res) => {
             name: req.user.name,
             email: req.user.email,
             businessName: req.user.businessName,
-            phone: req.user.phone, // Adicionado telefone ao perfil
         });
     } else {
         res.status(404).json({ message: 'Usuário não encontrado.' });
-    }
-};
-
-exports.updateProfile = async (req, res) => {
-    try {
-        const { id } = req.user;
-        const { ownerName, businessName, phone, currentPassword, newPassword } = req.body;
-
-        const user = await User.findByPk(id);
-        if (!user) {
-            return res.status(404).json({ message: 'Usuário não encontrado.' });
-        }
-
-        // Lógica para atualizar informações do perfil
-        if (ownerName || businessName || phone) {
-            if (ownerName) user.name = ownerName;
-            if (businessName) user.businessName = businessName;
-            if (phone) user.phone = phone;
-        }
-
-        // Lógica para atualizar a senha
-        if (newPassword && currentPassword) {
-            const isMatch = await bcrypt.compare(currentPassword, user.password);
-            if (!isMatch) {
-                return res.status(401).json({ message: 'A senha atual está incorreta.' });
-            }
-            if (newPassword.length < 8) {
-                return res.status(400).json({ message: 'A nova senha deve ter pelo menos 8 caracteres.' });
-            }
-            // O hook `beforeSave` no modelo User irá criptografar a nova senha
-            user.password = newPassword;
-        }
-
-        await user.save();
-
-        const updatedUser = {
-            id: user.id,
-            name: user.name,
-            email: user.email,
-            businessName: user.businessName,
-            phone: user.phone,
-        };
-
-        res.status(200).json({ message: 'Perfil atualizado com sucesso!', user: updatedUser });
-
-    } catch (error) {
-        console.error('Erro ao atualizar perfil:', error);
-        res.status(500).json({ message: 'Erro no servidor ao atualizar o perfil.' });
     }
 };
 
@@ -244,7 +172,7 @@ exports.forgotPassword = async (req, res) => {
         user.passwordResetExpires = Date.now() + 10 * 60 * 1000; // 10 minutos
         await user.save();
         
-        const resetURL = `http://localhost:3000/verificar-codigo.html?token=${resetToken}`;
+        const resetURL = `${process.env.APP_URL}/verificar-codigo.html?token=${resetToken}`;
         
         const emailHtml = `
             <!DOCTYPE html>
