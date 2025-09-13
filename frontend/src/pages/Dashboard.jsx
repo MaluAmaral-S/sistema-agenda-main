@@ -4,24 +4,21 @@ import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "../components/common/LoadingSpinner";
 import BusinessHours from "./BusinessHours";
 import Servicos from "./Services";
-import Planos from "./Plans";
 import Appointments from "./Appointments";
+import Header from "../components/layout/Header"; // Import the new Header
 import { apiRequest } from "../services/api";
 import {
   Calendar,
   CalendarCheck,
   Scissors,
   DollarSign,
-  Clock,
   Copy,
-  LogOut,
-  Crown,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 const Dashboard = () => {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("dashboard");
   const [stats, setStats] = useState({
@@ -73,80 +70,14 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-gradient-to-r from-purple-600 to-purple-700 shadow-lg">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center justify-center w-12 h-12 bg-white rounded-full shadow-md">
-                <CalendarCheck className="w-6 h-6 text-purple-600" />
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold text-white">AgendaPro</h1>
-                <p className="text-white/80 text-sm">
-                  Bem-vindo,{" "}
-                  <span className="font-medium">
-                    {user?.name || "Utilizador"}
-                  </span>{" "}
-                  -
-                  <span className="font-medium">
-                    {user?.businessName || "Empresa"}
-                  </span>
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center space-x-3">
-              <button
-                onClick={() => navigate("/planos")}
-                className="bg-white/20 hover:bg-white/30 text-white font-medium py-2 px-4 rounded-lg transition-all duration-200 flex items-center"
-              >
-                <Crown className="w-4 h-4 mr-2" />
-                Planos
-              </button>
-              <button
-                onClick={logout}
-                className="bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-4 rounded-lg transition-all duration-200 flex items-center"
-              >
-                <LogOut className="w-4 h-4 mr-2" />
-                Sair
-              </button>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      {/* Navigation Tabs */}
-      <div className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <nav className="flex space-x-8">
-            {[
-              { id: "dashboard", label: "Dashboard" },
-              { id: "servicos", label: "Serviços" },
-              { id: "horarios", label: "Horários" },
-              { id: "agendamentos", label: "Agendamentos" },
-            ].map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
-                  activeTab === tab.id
-                    ? "border-purple-600 text-purple-600"
-                    : "border-transparent text-gray-500 hover:text-gray-700"
-                }`}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </nav>
-        </div>
-      </div>
+      <Header activeTab={activeTab} setActiveTab={setActiveTab} />
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto py-8">
         {activeTab === "dashboard" && (
           <div className="px-4 sm:px-6 lg:px-8 space-y-8">
             {/* --- AQUI ESTÁ A GRELHA RESPONSIVA --- */}
-            <div className="grid grid-cols-4 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               <div className="bg-white rounded-xl p-6 shadow-sm border cursor-pointer hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
                 <div className="flex items-center">
                   <div className="flex-shrink-0">
