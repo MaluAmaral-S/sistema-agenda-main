@@ -6,7 +6,7 @@ const { Op } = require('sequelize');
 
 // Função auxiliar para converter horário em minutos
 const timeToMinutes = (timeString) => {
-  if (!timeString || !/^\d{2}:\d{2}$/.test(timeString)) return 0;
+  if (!timeString || !/^\d{2}:\d{2}(:\d{2})?$/.test(timeString)) return 0;
   const [hours, minutes] = timeString.split(':').map(Number);
   return hours * 60 + minutes;
 };
