@@ -1,4 +1,7 @@
 import React from "react";
+import { format } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
+import { parseDateOnlyFromAPI } from '../../utils/dateUtils';
 import {
   Calendar,
   Clock,
@@ -68,12 +71,11 @@ const AppointmentCard = ({
   };
 
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString("pt-BR", {
-      weekday: "short",
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-    });
+    if (!dateString) return '';
+    const date = parseDateOnlyFromAPI(dateString);
+    // Formato para corresponder ao estilo visual do card: "seg., 29 de set. de 2025"
+    // O uso de `parseDateOnlyFromAPI` corrige o bug de fuso horário que mostrava um dia a menos.
+    return format(date, "EEE, dd 'de' MMM 'de' yyyy", { locale: ptBR });
   };
 
   const formatTime = (timeString) => {
