@@ -18,7 +18,8 @@ if (dialect === 'sqlite') {
     host: process.env.DB_HOST,
     dialect: 'postgres',
     port: process.env.DB_PORT,
-    logging: false
+    logging: false,
+    timezone: '-03:00', // Força o Sequelize a usar o fuso horário de Brasília
   });
 }
 
