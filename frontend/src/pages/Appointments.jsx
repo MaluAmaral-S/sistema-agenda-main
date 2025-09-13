@@ -220,7 +220,9 @@ const Appointments = () => {
   };
 
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString("pt-BR", {
+    // Adiciona 'T00:00:00' para garantir que a data seja interpretada no fuso horário local
+    // e não em UTC, o que corrige o bug de exibir o dia anterior.
+    return new Date(dateString + 'T00:00:00').toLocaleDateString("pt-BR", {
       weekday: "short",
       day: "2-digit",
       month: "2-digit",

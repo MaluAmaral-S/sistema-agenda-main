@@ -104,7 +104,11 @@ const Booking = () => {
   const loadAvailableSlots = async () => {
     if (!selectedService || !selectedDate || !businessData) return;
     try {
-      const dateStr = selectedDate.toISOString().split("T")[0];
+      // CORREÇÃO: Formata a data para YYYY-MM-DD no fuso horário local
+      const year = selectedDate.getFullYear();
+      const month = String(selectedDate.getMonth() + 1).padStart(2, '0');
+      const day = String(selectedDate.getDate()).padStart(2, '0');
+      const dateStr = `${year}-${month}-${day}`;
       
       const response = await apiRequest.get(
         `/empresa/${businessData.id}/horarios-disponiveis?serviceId=${selectedService.id}&date=${dateStr}`
@@ -126,12 +130,18 @@ const Booking = () => {
   const handleBookingSubmit = async (e) => {
     e.preventDefault();
     try {
+      // CORREÇÃO: Formata a data para YYYY-MM-DD no fuso horário local
+      const year = selectedDate.getFullYear();
+      const month = String(selectedDate.getMonth() + 1).padStart(2, '0');
+      const day = String(selectedDate.getDate()).padStart(2, '0');
+      const appointmentDateStr = `${year}-${month}-${day}`;
+
       const bookingData = {
         serviceId: selectedService.id,
         clientName: clientData.nome,
         clientEmail: clientData.email,
         clientPhone: clientData.telefone,
-        appointmentDate: selectedDate.toISOString().split("T")[0],
+        appointmentDate: appointmentDateStr,
         appointmentTime: selectedTime,
       };
       await apiRequest.post(`/empresa/${businessData.id}/agendamentos`, bookingData);
