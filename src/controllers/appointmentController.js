@@ -294,14 +294,14 @@ const getAvailableSlots = async (req, res) => {
             where: {
                 userId,
                 appointmentDate: date,
-                status: { [Op.ne]: 'rejected' } // <-- CORREÇÃO FINAL APLICADA AQUI
-            },
-            include: [{ model: Service, as: 'service', attributes: ['duracao_minutos'] }]
+                status: ['pending', 'confirmed'] // Apenas agendamentos pendentes ou confirmados bloqueiam horários
+            }
         });
 
         const bookedSlots = existingAppointments.map(app => {
             const start = timeToMinutes(app.appointmentTime);
-            const end = start + (app.service?.duracao_minutos || service.duracao_minutos);
+            // Usa o `endTime` já calculado e salvo no banco de dados para consistência
+            const end = timeToMinutes(app.endTime);
             return { start, end };
         });
 
