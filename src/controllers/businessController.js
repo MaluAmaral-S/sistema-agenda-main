@@ -156,7 +156,7 @@ const getCompleteBusinessData = async (req, res) => {
 
 const getDashboardStats = async (req, res) => {
   try {
-    const { userId } = req.user;
+    const userId = req.user.id;
 
     const today = new Date();
     const startOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate());

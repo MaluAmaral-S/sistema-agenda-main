@@ -172,7 +172,7 @@ exports.forgotPassword = async (req, res) => {
         user.passwordResetExpires = Date.now() + 10 * 60 * 1000; // 10 minutos
         await user.save();
         
-        const resetURL = `http://localhost:3000/verificar-codigo.html?token=${resetToken}`;
+        const resetURL = `${process.env.APP_URL}/verificar-codigo.html?token=${resetToken}`;
         
         const emailHtml = `
             <!DOCTYPE html>

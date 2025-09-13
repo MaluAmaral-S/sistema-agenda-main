@@ -31,7 +31,7 @@ function App() {
             <Route path="/planos" element={<Plans />} />
             <Route path="/demo" element={<AppointmentsDemo />} />
             <Route path="/agendamento/:businessSlug" element={<Booking />} /> {/* Rota principal de agendamento */}
-            <Route path="/agendamento" element={<Booking />} />
+            {/* A rota genérica /agendamento foi removida pois não é funcional sem um businessSlug */}
             
             {/* Rotas protegidas */}
             <Route path="/painel" element={

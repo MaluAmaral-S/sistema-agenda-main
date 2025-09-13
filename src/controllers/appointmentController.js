@@ -182,7 +182,7 @@ const getAppointments = async (req, res) => {
 const confirmAppointment = async (req, res) => {
     try {
         const { id } = req.params;
-        const { userId } = req.user;
+        const userId = req.user.id;
 
         const appointment = await Appointment.findOne({
             where: { id, userId },
@@ -204,7 +204,7 @@ const confirmAppointment = async (req, res) => {
 const rejectAppointment = async (req, res) => {
     try {
         const { id } = req.params;
-        const { userId } = req.user;
+        const userId = req.user.id;
         const { rejectionReason } = req.body;
 
         const appointment = await Appointment.findOne({ where: { id, userId } });
@@ -223,7 +223,7 @@ const rejectAppointment = async (req, res) => {
 const rescheduleAppointment = async (req, res) => {
     try {
         const { id } = req.params;
-        const { userId } = req.user;
+        const userId = req.user.id;
         const { suggestedDate, suggestedTime } = req.body;
 
         const appointment = await Appointment.findOne({

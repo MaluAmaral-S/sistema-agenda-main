@@ -71,7 +71,7 @@ const Login = () => {
   // Validação do formulário de registro
   const validateRegister = () => {
     const newErrors = {};
-    
+
     if (!registerData.name) {
       newErrors.name = 'Nome é obrigatório';
     }
@@ -87,7 +87,7 @@ const Login = () => {
     } else if (registerData.password.length < 6) {
       newErrors.password = 'Senha deve ter pelo menos 6 caracteres';
     }
-    
+
     if (!registerData.confirmPassword) {
       newErrors.confirmPassword = 'Confirmação de senha é obrigatória';
     } else if (registerData.password !== registerData.confirmPassword) {
