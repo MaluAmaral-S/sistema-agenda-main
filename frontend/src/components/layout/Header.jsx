@@ -45,7 +45,7 @@ const Header = ({ activeTab, setActiveTab }) => {
                 </p>
               </div>
             </div>
-            <div className="hidden md:flex items-center space-x-3">
+            <div className="hidden sm:flex items-center space-x-3">
               <button
                 onClick={() => navigate("/planos")}
                 className="bg-white/20 hover:bg-white/30 text-white font-medium py-2 px-4 rounded-lg transition-all duration-200 flex items-center"
@@ -61,7 +61,7 @@ const Header = ({ activeTab, setActiveTab }) => {
                 Sair
               </button>
             </div>
-            <div className="md:hidden">
+            <div className="sm:hidden">
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 className="text-white"
@@ -80,7 +80,7 @@ const Header = ({ activeTab, setActiveTab }) => {
       {/* Navigation Tabs */}
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <nav className="hidden md:flex space-x-8">
+          <nav className="hidden sm:flex space-x-8">
             {navLinks.map((tab) => (
               <button
                 key={tab.id}
@@ -100,7 +100,7 @@ const Header = ({ activeTab, setActiveTab }) => {
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-white shadow-lg">
+        <div className="sm:hidden bg-white shadow-lg">
           <nav className="flex flex-col space-y-1 px-2 py-3">
             {navLinks.map((tab) => (
               <button
