@@ -1,6 +1,11 @@
 // src/config/database.js
 require('dotenv').config();
 const { Sequelize } = require('sequelize');
+const pg = require('pg');
+
+// Forçar o node-postgres a retornar o tipo DATE como string em vez de objeto Date.
+// Isso evita problemas de conversão de fuso horário. OID 1082 é o código para o tipo DATE.
+pg.types.setTypeParser(1082, (val) => val);
 
 // Configuração para SQLite (para testes) ou PostgreSQL (para produção)
 const dialect = process.env.DB_DIALECT || 'postgres';
@@ -23,4 +28,3 @@ if (dialect === 'sqlite') {
 }
 
 module.exports = sequelize;
-

@@ -1,4 +1,5 @@
 import React, { useMemo } from "react";
+import { parseDateFromAPI } from "../../utils/dateUtils";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import "moment/locale/pt-br";
@@ -27,21 +28,14 @@ const CalendarView = ({
   onReschedule 
 }) => {
   // Converter agendamentos para eventos do calendário
-  const events = useMemo(() => {
-    return appointments.map(appointment => {
-      const startDate = moment(`${appointment.appointmentDate} ${appointment.appointmentTime}`, "YYYY-MM-DD HH:mm").toDate();
-      const endDate = moment(startDate).add(appointment.service?.duracao_minutos || 60, 'minutes').toDate();
-      
-      return {
-        id: appointment.id,
-        title: `${appointment.clientName} - ${appointment.service?.nome || 'Serviço'}`,
-        start: startDate,
-        end: endDate,
-        resource: appointment,
-        allDay: false
-      };
-    });
-  }, [appointments]);
+  const events = appointments.map(app => ({
+    title: `${app.service?.nome} - ${app.clientName}`,
+    // SUBSTITUA as chamadas a 'new Date()' pela nossa função segura:
+    start: parseDateFromAPI(app.appointmentDate, app.appointmentTime),
+    end: parseDateFromAPI(app.appointmentDate, app.endTime),
+    allDay: false,
+    resource: app,
+  }));
 
   // Configuração de cores por status
   const getEventStyle = (event) => {
