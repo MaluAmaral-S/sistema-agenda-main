@@ -15,6 +15,7 @@ const User = sequelize.define('User', {
   businessType: {
     type: DataTypes.STRING,
     allowNull: false,
+    defaultValue: 'Geral', // Adiciona um valor padrão
   },
   email: {
     type: DataTypes.STRING,
