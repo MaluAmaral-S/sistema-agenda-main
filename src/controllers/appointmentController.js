@@ -41,16 +41,27 @@ const isWithinBusinessHours = (businessHours, dayOfWeek, startTime, endTime) => 
   });
 };
 
-// Função para verificar conflitos de horário
+// Função para verificar conflitos de horário (lógica de sobreposição corrigida)
 const hasTimeConflict = async (userId, date, startTime, endTime, excludeAppointmentId = null) => {
   const whereClause = {
     userId,
     appointmentDate: date,
-    status: ['confirmed', 'pending'], // Considera tanto pendentes quanto confirmados
+    status: ['confirmed', 'pending'],
     [Op.or]: [
-      { // Um agendamento existente começa durante o novo
-        appointmentTime: { [Op.lt]: endTime },
+      // 1. O novo agendamento começa durante um existente
+      {
+        appointmentTime: { [Op.lt]: startTime },
         endTime: { [Op.gt]: startTime }
+      },
+      // 2. O novo agendamento termina durante um existente
+      {
+        appointmentTime: { [Op.lt]: endTime },
+        endTime: { [Op.gt]: endTime }
+      },
+      // 3. O novo agendamento envolve completamente um existente
+      {
+        appointmentTime: { [Op.gte]: startTime },
+        endTime: { [Op.lte]: endTime }
       }
     ]
   };
