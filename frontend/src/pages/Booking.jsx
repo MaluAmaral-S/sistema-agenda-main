@@ -29,6 +29,7 @@ const Booking = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
   const [availableSlots, setAvailableSlots] = useState([]);
+  const [isSlotsLoading, setIsSlotsLoading] = useState(false);
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [clientData, setClientData] = useState({
     nome: "",
@@ -104,6 +105,8 @@ const Booking = () => {
 
   const loadAvailableSlots = async () => {
     if (!selectedService || !selectedDate || !businessData) return;
+    setIsSlotsLoading(true);
+    setAvailableSlots([]);
     try {
       const dateStr = formatDateForAPI(selectedDate);
       
@@ -121,6 +124,8 @@ const Booking = () => {
     } catch (error) {
       console.error("Erro ao carregar horários disponíveis:", error);
       setAvailableSlots([]);
+    } finally {
+      setIsSlotsLoading(false);
     }
   };
 
@@ -431,7 +436,12 @@ const Booking = () => {
               Escolha o Horário
             </h2>
             <p className="text-gray-600 mb-6">Selecione o horário disponível para seu agendamento</p>
-            {availableSlots.length > 0 ? (
+            {isSlotsLoading ? (
+              <div className="text-center py-8">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto mb-4"></div>
+                <p className="text-gray-600">Buscando horários...</p>
+              </div>
+            ) : availableSlots.length > 0 ? (
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
                 {availableSlots.map((slot) => (
                   <button key={slot} onClick={() => handleTimeSelect(slot)} className={`p-3 text-sm rounded-lg border transition-colors ${selectedTime === slot ? "bg-gradient-to-r from-purple-600 to-purple-700 text-white border-purple-600" : "border-gray-200 hover:border-purple-300 hover:bg-purple-50"}`}>
@@ -445,7 +455,7 @@ const Booking = () => {
                   <Clock className="w-6 h-6 text-gray-400" />
                 </div>
                 <p className="text-gray-600">Nenhum horário disponível para esta data</p>
-                <p className="text-sm text-gray-500 mt-1">Tente selecionar outra data</p>
+                <p className="text-sm text-gray-500 mt-1">Tente selecionar outra data ou serviço</p>
               </div>
             )}
           </div>

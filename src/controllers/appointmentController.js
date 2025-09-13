@@ -308,30 +308,43 @@ const getAvailableSlots = async (req, res) => {
         const availableSlots = [];
         const serviceDuration = service.duracao_minutos;
         const now = new Date();
-        const isToday = now.toISOString().split('T')[0] === date;
+        // Corrige a comparação para considerar o fuso horário local
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const isToday = dateObj.getTime() === today.getTime();
+        const currentMinutes = now.getHours() * 60 + now.getMinutes();
+
+        const slotIncrement = 15; // Define o incremento dos slots, pode ser ajustado
 
         for (const interval of daySchedule.intervals) {
-            let slotStartMinutes = timeToMinutes(interval.start);
+            let potentialStartMinutes = timeToMinutes(interval.start);
             const intervalEndMinutes = timeToMinutes(interval.end);
 
-            while (slotStartMinutes + serviceDuration <= intervalEndMinutes) {
-                const slotEndMinutes = slotStartMinutes + serviceDuration;
+            while (potentialStartMinutes <= intervalEndMinutes) {
+                const potentialEndMinutes = potentialStartMinutes + serviceDuration;
 
-                const slotDateTime = new Date(`${date}T${minutesToTime(slotStartMinutes)}:00`);
-                if (isToday && slotDateTime < now) {
-                    slotStartMinutes += 15;
+                // 1. O slot termina depois do fim do expediente de trabalho?
+                if (potentialEndMinutes > intervalEndMinutes) {
+                    break; // Não cabem mais slots deste serviço neste intervalo
+                }
+
+                // 2. O horário já passou (se for hoje)?
+                if (isToday && potentialStartMinutes < currentMinutes) {
+                    potentialStartMinutes += slotIncrement;
                     continue;
                 }
 
+                // 3. Há conflito com agendamentos existentes?
                 const hasConflict = bookedSlots.some(booked =>
-                    (slotStartMinutes < booked.end && slotEndMinutes > booked.start)
+                    (potentialStartMinutes < booked.end && potentialEndMinutes > booked.start)
                 );
 
                 if (!hasConflict) {
-                    availableSlots.push({ startTime: minutesToTime(slotStartMinutes) });
+                    availableSlots.push({ startTime: minutesToTime(potentialStartMinutes) });
                 }
                 
-                slotStartMinutes += 15; // Intervalo de verificação de 15 min
+                // Avança para o próximo slot potencial
+                potentialStartMinutes += slotIncrement;
             }
         }
 
