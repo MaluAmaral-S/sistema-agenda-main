@@ -102,17 +102,17 @@ const Services = () => {
                 </div>
                 <div className="p-6">
                     <form onSubmit={handleCreateService} className="space-y-6">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
                             <div>
-                                <Label htmlFor="nome">Nome do Serviço *</Label>
+                                <Label htmlFor="nome" className="mb-2 block">Nome do Serviço *</Label>
                                 <Input id="nome" name="nome" required placeholder="Ex: Corte de Cabelo" />
                             </div>
                             <div>
-                                <Label htmlFor="descricao">Descrição</Label>
+                                <Label htmlFor="descricao" className="mb-2 block">Descrição</Label>
                                 <Input id="descricao" name="descricao" placeholder="Opcional" />
                             </div>
                             <div>
-                                <Label htmlFor="duracao">Duração *</Label>
+                                <Label htmlFor="duracao" className="mb-2 block">Duração *</Label>
                                 <Input 
                                     id="duracao" 
                                     name="duracao"
@@ -123,7 +123,7 @@ const Services = () => {
                                 />
                             </div>
                             <div>
-                                <Label htmlFor="preco">Preço (R$)</Label>
+                                <Label htmlFor="preco" className="mb-2 block">Preço (R$)</Label>
                                 <Input id="preco" name="preco" type="number" step="0.01" min="0" placeholder="25.00" />
                             </div>
                         </div>

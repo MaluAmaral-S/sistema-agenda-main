@@ -18,6 +18,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { apiRequest } from '../services/api';
+import { Clock, Calendar, Building2, Check } from 'lucide-react';
 
 // Placeholder components for the actual steps
 const Step1 = () => (
@@ -100,12 +101,20 @@ const FirstSteps = () => {
       <div className="w-full max-w-4xl">
         {/* Step Indicators */}
         <div className="flex justify-center items-center mb-8">
-          {[1, 2, 3].map((s) => (
+          {[
+            { step: 1, icon: <Clock className="w-5 h-5" /> },
+            { step: 2, icon: <Calendar className="w-5 h-5" /> },
+            { step: 3, icon: <Building2 className="w-5 h-5" /> }
+          ].map(({ step: s, icon }) => (
             <React.Fragment key={s}>
-              <div className={`flex items-center justify-center w-10 h-10 rounded-full border-2 ${step >= s ? 'bg-purple-600 border-purple-600 text-white' : 'bg-white border-gray-300'}`}>
-                {s}
+              <div className={`flex items-center justify-center w-12 h-12 rounded-full border-2 transition-all duration-300 ${
+                step === s ? 'bg-purple-600 border-purple-600 text-white scale-110' :
+                step > s ? 'bg-green-500 border-green-500 text-white' :
+                'bg-white border-gray-300 text-gray-400'
+              }`}>
+                {step > s ? <Check className="w-6 h-6" /> : icon}
               </div>
-              {s < 3 && <div className={`w-24 h-1 ${step > s ? 'bg-purple-600' : 'bg-gray-300'}`}></div>}
+              {s < 3 && <div className={`w-24 h-1 transition-all duration-300 ${step > s ? 'bg-green-500' : 'bg-gray-300'}`}></div>}
             </React.Fragment>
           ))}
         </div>

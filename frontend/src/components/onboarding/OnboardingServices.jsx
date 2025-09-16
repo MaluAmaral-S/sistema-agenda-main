@@ -94,61 +94,64 @@ const OnboardingServices = () => {
 
     return (
         <div className="space-y-6">
-            <div className="border rounded-lg p-4">
-                <h3 className="text-lg font-semibold flex items-center mb-4">
-                    <PlusCircle className="w-5 h-5 mr-2 text-[#704abf]" />
+            <div className="bg-white rounded-xl p-6 shadow-sm border">
+                <h3 className="text-lg font-semibold flex items-center mb-4 text-gray-800">
+                    <PlusCircle className="w-5 h-5 mr-3 text-purple-600" />
                     Adicionar Novo Serviço
                 </h3>
                 <form onSubmit={handleCreateService} className="space-y-4">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4">
                         <div>
-                            <Label htmlFor="nome-onboarding">Nome do Serviço *</Label>
+                            <Label htmlFor="nome-onboarding" className="mb-2 block">Nome do Serviço *</Label>
                             <Input id="nome-onboarding" name="nome" required placeholder="Ex: Corte de Cabelo" />
                         </div>
                         <div>
-                            <Label htmlFor="duracao-onboarding">Duração *</Label>
+                            <Label htmlFor="duracao-onboarding" className="mb-2 block">Duração *</Label>
                             <Input id="duracao-onboarding" name="duracao" type="time" required defaultValue="00:30" step="300" />
                         </div>
                         <div>
-                            <Label htmlFor="preco-onboarding">Preço (R$)</Label>
+                            <Label htmlFor="preco-onboarding" className="mb-2 block">Preço (R$)</Label>
                             <Input id="preco-onboarding" name="preco" type="number" step="0.01" min="0" placeholder="25.00" />
                         </div>
                         <div className="sm:col-span-2">
-                             <Label htmlFor="descricao-onboarding">Descrição</Label>
+                            <Label htmlFor="descricao-onboarding" className="mb-2 block">Descrição</Label>
                             <Input id="descricao-onboarding" name="descricao" placeholder="Opcional" />
                         </div>
                     </div>
-                    <div className="flex justify-end">
-                        <Button type="submit" disabled={submitting}>
+                    <div className="flex justify-end pt-2">
+                        <Button type="submit" disabled={submitting} className="bg-purple-600 hover:bg-purple-700">
                             {submitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Adicionando...</> : 'Adicionar Serviço'}
                         </Button>
                     </div>
                 </form>
             </div>
 
-            <div>
-                <h3 className="text-lg font-semibold flex items-center mb-4">
-                    <List className="w-5 h-5 mr-2 text-[#704abf]" />
+            <div className="bg-white rounded-xl p-6 shadow-sm border">
+                <h3 className="text-lg font-semibold flex items-center mb-4 text-gray-800">
+                    <List className="w-5 h-5 mr-3 text-purple-600" />
                     Meus Serviços
                 </h3>
                 {loading ? (
                     <LoadingSpinner text="A carregar serviços..." />
                 ) : services.length === 0 ? (
-                    <div className="text-center py-6 text-gray-500 border rounded-lg">
-                        <Scissors className="w-8 h-8 mx-auto mb-2 text-gray-400" />
-                        <p>Nenhum serviço registado ainda.</p>
+                    <div className="text-center py-8 text-gray-500 border-2 border-dashed rounded-lg">
+                        <Scissors className="w-10 h-10 mx-auto mb-3 text-gray-400" />
+                        <p className="font-medium">Nenhum serviço registado ainda.</p>
+                        <p className="text-sm">Adicione seu primeiro serviço acima.</p>
                     </div>
                 ) : (
-                    <div className="space-y-2 border rounded-lg p-2">
+                    <div className="space-y-3">
                         {services.map((service) => (
-                            <div key={service.id} className="flex items-center justify-between p-2 border-b last:border-b-0">
+                            <div key={service.id} className="flex items-center justify-between p-3 rounded-lg bg-gray-50 border">
                                 <div>
-                                    <p className="font-medium">{service.nome}</p>
+                                    <p className="font-semibold text-gray-800">{service.nome}</p>
                                     <p className="text-sm text-gray-500">
                                         {formatarMinutosParaDuracao(service.duracao_minutos)} - R$ {parseFloat(service.preco || 0).toFixed(2)}
                                     </p>
                                 </div>
-                                <Button variant="ghost" size="sm" onClick={() => handleDeleteService(service.id)}><Trash2 className="w-4 h-4 text-red-500" /></Button>
+                                <Button variant="ghost" size="icon" onClick={() => handleDeleteService(service.id)} className="text-gray-400 hover:bg-red-100 hover:text-red-600">
+                                    <Trash2 className="w-4 h-4" />
+                                </Button>
                             </div>
                         ))}
                     </div>

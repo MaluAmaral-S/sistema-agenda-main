@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { apiRequest } from '../../services/api';
+import { toast } from 'sonner';
 
 const OnboardingBusinessHours = () => {
   const [businessHours, setBusinessHours] = useState({});
@@ -85,14 +86,13 @@ const OnboardingBusinessHours = () => {
 
   const saveBusinessHours = async () => {
     setError('');
-    setSuccess('');
     if (!validateHours()) return;
     try {
       setSaving(true);
       await apiRequest.post('/business-hours', { businessHours });
-      setSuccess('Horários salvos com sucesso!');
-      setTimeout(() => setSuccess(''), 3000);
+      toast.success('Horários salvos com sucesso!');
     } catch (error) {
+      toast.error(error.message || 'Erro ao salvar horários.');
       setError(error.message || 'Erro ao salvar horários.');
     } finally {
       setSaving(false);
@@ -104,29 +104,30 @@ const OnboardingBusinessHours = () => {
   return (
     <div>
       {error && <Alert variant="destructive" className="mb-4"><AlertCircle className="h-4 w-4" /><AlertDescription>{error}</AlertDescription></Alert>}
-      {success && <Alert className="mb-4 bg-green-50 border-green-200 text-green-800"><AlertCircle className="h-4 w-4" /><AlertDescription>{success}</AlertDescription></Alert>}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {daysOfWeek.map((dayName, dayIndex) => {
           const dayData = businessHours[dayIndex] || { isOpen: false, intervals: [] };
           return (
-            <div key={dayIndex} className="border rounded-lg p-3 bg-gray-50">
-              <div className="flex items-center justify-between mb-3 pb-2 border-b">
-                <span className="font-semibold text-sm">{dayName}</span>
+            <div key={dayIndex} className="bg-white rounded-xl p-4 shadow-sm border hover:shadow-lg transition-all duration-300">
+              <div className="flex items-center justify-between mb-3 pb-3 border-b">
+                <span className="font-semibold text-gray-800">{dayName}</span>
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input type="checkbox" checked={dayData.isOpen} onChange={() => toggleDay(dayIndex)} className="sr-only peer" />
-                  <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#704abf]"></div>
+                  <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
                 </label>
               </div>
               {dayData.isOpen && (
-                <div className="space-y-2">
+                <div className="space-y-3">
                   {dayData.intervals.map((interval, intervalIndex) => (
                     <div key={intervalIndex} className="flex items-center gap-2">
-                      <Input type="time" value={interval.start} onChange={(e) => updateInterval(dayIndex, intervalIndex, 'start', e.target.value)} />
-                      <Input type="time" value={interval.end} onChange={(e) => updateInterval(dayIndex, intervalIndex, 'end', e.target.value)} />
-                      <Button variant="ghost" size="sm" onClick={() => removeInterval(dayIndex, intervalIndex)}><Trash2 className="w-4 h-4 text-gray-500" /></Button>
+                      <Input type="time" value={interval.start} onChange={(e) => updateInterval(dayIndex, intervalIndex, 'start', e.target.value)} className="bg-gray-100 border-gray-200" />
+                      <Input type="time" value={interval.end} onChange={(e) => updateInterval(dayIndex, intervalIndex, 'end', e.target.value)} className="bg-gray-100 border-gray-200" />
+                      <Button variant="ghost" size="sm" onClick={() => removeInterval(dayIndex, intervalIndex)} className="text-gray-400 hover:text-red-500"><Trash2 className="w-4 h-4" /></Button>
                     </div>
                   ))}
-                  <Button variant="outline" size="sm" onClick={() => addInterval(dayIndex)} className="w-full"><Plus className="w-4 h-4 mr-2" />Adicionar</Button>
+                  <Button variant="outline" size="sm" onClick={() => addInterval(dayIndex)} className="w-full text-purple-600 border-purple-200 hover:bg-purple-50 hover:text-purple-700">
+                    <Plus className="w-4 h-4 mr-2" />Adicionar
+                  </Button>
                 </div>
               )}
             </div>
