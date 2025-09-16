@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import OnboardingBusinessHours from '../components/onboarding/OnboardingBusinessHours';
 import OnboardingServices from '../components/onboarding/OnboardingServices';
 import { Input } from '@/components/ui/input';
@@ -21,10 +22,10 @@ import { apiRequest } from '../services/api';
 import { Clock, Calendar, Building2, Check } from 'lucide-react';
 
 // Placeholder components for the actual steps
-const Step1 = () => (
+const Step1 = ({ businessHours, setBusinessHours }) => (
   <div>
-    <p className="mb-4 text-gray-600">Defina aqui os dias e horários em que você está disponível para receber agendamentos. Seus clientes só conseguirão marcar horários dentro dos intervalos que você selecionar.</p>
-    <OnboardingBusinessHours />
+    <p className="mb-4 text-gray-600 text-center">Defina aqui os dias e horários em que você está disponível para receber agendamentos. <br /> Seus clientes só conseguirão marcar horários dentro dos intervalos que você selecionar.</p>
+    <OnboardingBusinessHours businessHours={businessHours} setBusinessHours={setBusinessHours} />
   </div>
 );
 const Step2 = () => (
@@ -38,27 +39,68 @@ const Step3 = () => (
         <p className="mb-4 text-gray-600">Revise os dados do seu negócio. O 'Nome da Empresa' será exibido para seus clientes na página de agendamento. O e-mail e o WhatsApp serão usados para comunicação.</p>
         <div className="space-y-4">
             <div>
-                <Label htmlFor="businessName">Nome da Empresa</Label>
+                <Label htmlFor="businessName" className="mb-2 block">Nome da Empresa</Label>
                 <Input id="businessName" defaultValue="Minha Empresa" />
             </div>
             <div>
-                <Label htmlFor="email">E-mail de Contato</Label>
+                <Label htmlFor="email" className="mb-2 block">E-mail de Contato</Label>
                 <Input id="email" type="email" defaultValue="contato@minhaempresa.com" />
             </div>
             <div>
-                <Label htmlFor="whatsapp">Número de WhatsApp</Label>
+                <Label htmlFor="whatsapp" className="mb-2 block">Número de WhatsApp</Label>
                 <Input id="whatsapp" type="tel" defaultValue="(11) 99999-9999" />
             </div>
         </div>
     </div>
 );
 
+import { toast } from 'sonner';
+
 const FirstSteps = () => {
   const [step, setStep] = useState(1);
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const [businessHours, setBusinessHours] = useState({});
+  const [isSaving, setIsSaving] = useState(false);
 
-  const handleNext = () => {
-    if (step < 3) {
+  useEffect(() => {
+    // Carregar os horários de funcionamento iniciais quando o componente montar
+    const loadBusinessHours = async () => {
+      try {
+        const response = await apiRequest.get('/business-hours');
+        if (response && response.businessHours && Object.keys(response.businessHours).length > 0) {
+          setBusinessHours(response.businessHours);
+        } else {
+          // Define um estado padrão se não houver horários configurados
+          const defaultHours = {
+            "1": { isOpen: true, intervals: [{ start: '08:00', end: '18:00' }] },
+            "2": { isOpen: true, intervals: [{ start: '08:00', end: '18:00' }] },
+            "3": { isOpen: true, intervals: [{ start: '08:00', end: '18:00' }] },
+            "4": { isOpen: true, intervals: [{ start: '08:00', end: '18:00' }] },
+            "5": { isOpen: true, intervals: [{ start: '08:00', end: '18:00' }] },
+          };
+          setBusinessHours(defaultHours);
+        }
+      } catch (error) {
+        console.warn('Erro ao carregar horários, usando padrão:', error.message);
+      }
+    };
+    loadBusinessHours();
+  }, []);
+
+  const handleNext = async () => {
+    if (step === 1) {
+      setIsSaving(true);
+      try {
+        await apiRequest.post('/business-hours', { businessHours });
+        toast.success('Horários salvos com sucesso!');
+        setStep(step + 1);
+      } catch (error) {
+        toast.error('Não foi possível salvar os horários. Tente novamente.');
+      } finally {
+        setIsSaving(false);
+      }
+    } else if (step < 3) {
       setStep(step + 1);
     }
   };
@@ -97,68 +139,89 @@ const FirstSteps = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4">
-      <div className="w-full max-w-4xl">
-        {/* Step Indicators */}
-        <div className="flex justify-center items-center mb-8">
-          {[
-            { step: 1, icon: <Clock className="w-5 h-5" /> },
-            { step: 2, icon: <Calendar className="w-5 h-5" /> },
-            { step: 3, icon: <Building2 className="w-5 h-5" /> }
-          ].map(({ step: s, icon }) => (
-            <React.Fragment key={s}>
-              <div className={`flex items-center justify-center w-12 h-12 rounded-full border-2 transition-all duration-300 ${
-                step === s ? 'bg-purple-600 border-purple-600 text-white scale-110' :
-                step > s ? 'bg-green-500 border-green-500 text-white' :
-                'bg-white border-gray-300 text-gray-400'
-              }`}>
-                {step > s ? <Check className="w-6 h-6" /> : icon}
-              </div>
-              {s < 3 && <div className={`w-24 h-1 transition-all duration-300 ${step > s ? 'bg-green-500' : 'bg-gray-300'}`}></div>}
-            </React.Fragment>
-          ))}
+    <div className="min-h-screen bg-gray-50">
+      <header className="bg-gradient-to-r from-purple-600 to-purple-700 shadow-lg">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <h1 className="text-2xl font-bold text-white text-center">Configuração Inicial da Conta</h1>
+        </div>
+      </header>
+
+      <div className="bg-white shadow-sm border-b">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
+          {/* Step Indicators */}
+          <div className="flex justify-center items-center">
+            {[
+              { step: 1, icon: <Clock className="w-5 h-5" /> },
+              { step: 2, icon: <Calendar className="w-5 h-5" /> },
+              { step: 3, icon: <Building2 className="w-5 h-5" /> }
+            ].map(({ step: s, icon }) => (
+              <React.Fragment key={s}>
+                <div className={`flex items-center justify-center w-12 h-12 rounded-full transition-all duration-300 ${
+                  step === s ? 'bg-gradient-to-r from-purple-600 to-purple-700 text-white scale-110 shadow-lg' :
+                  step > s ? 'bg-gradient-to-r from-green-500 to-green-600 text-white' :
+                  'bg-gray-200 text-gray-500'
+                }`}>
+                  {step > s ? <Check className="w-6 h-6" /> : icon}
+                </div>
+                {s < 3 && (
+                  <div className="flex-1 h-1 bg-gray-200 mx-4 rounded">
+                    <div className={`h-full rounded transition-all duration-500 ${step > s ? "bg-gradient-to-r from-green-500 to-green-600" : ""}`} style={{ width: step > s ? '100%' : '0%' }}></div>
+                  </div>
+                )}
+              </React.Fragment>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl font-bold text-gray-800">Bem-vindo(a), {user?.name || 'Empreendedor(a)'}!</h2>
+          <p className="text-lg text-gray-600 mt-2">Vamos configurar sua conta. Siga os passos para deixar tudo pronto para seus clientes.</p>
         </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Bem-vindo! Vamos configurar sua conta.</CardTitle>
-            <CardDescription>Siga os passos para deixar tudo pronto para seus clientes.</CardDescription>
-          </CardHeader>
-          <CardContent>
+        <Card className="w-full">
+          <CardContent className="p-6">
             {renderStepContent()}
           </CardContent>
         </Card>
 
         {/* Navigation */}
-        <div className="flex justify-between mt-8">
+        <div className="flex items-center justify-between mt-12">
+          {/* Left Side: Skip or Back */}
           <div>
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button variant="link">Seguir para o painel</Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Tem certeza?</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    Você pode concluir as configurações mais tarde no seu painel.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Voltar</AlertDialogCancel>
-                  <AlertDialogAction onClick={handleSkip}>Seguir para o Painel</AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-          </div>
-          <div className="flex gap-4">
-            {step > 1 && (
+            {step > 1 ? (
               <Button variant="outline" onClick={handleBack}>
                 Voltar
               </Button>
+            ) : (
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="secondary" className="bg-gray-200 hover:bg-gray-300 text-gray-800">
+                    Pular e ir para o Painel
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Tem certeza?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Você pode concluir as configurações mais tarde no seu painel.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Voltar</AlertDialogCancel>
+                    <AlertDialogAction onClick={handleSkip}>Pular</AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             )}
+          </div>
+
+          {/* Right Side: Next or Finish */}
+          <div>
             {step < 3 && (
-              <Button onClick={handleNext} className="bg-purple-600 hover:bg-purple-700">
-                Próximo
+              <Button onClick={handleNext} disabled={isSaving} className="bg-purple-600 hover:bg-purple-700">
+                {isSaving ? "Salvando..." : "Próximo"}
               </Button>
             )}
             {step === 3 && (
