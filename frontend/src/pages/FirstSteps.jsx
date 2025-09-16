@@ -245,7 +245,7 @@ const FirstSteps = () => {
             )}
           </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 };
