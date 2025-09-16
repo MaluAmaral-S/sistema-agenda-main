@@ -13,6 +13,7 @@ import BusinessHours from './pages/BusinessHours';
 import Plans from './pages/Plans';
 import Booking from './pages/Booking';
 import AppointmentsDemo from './pages/AppointmentsDemo';
+import FirstSteps from './pages/FirstSteps';
 
 
 
@@ -49,6 +50,12 @@ function App() {
             <Route path="/horarios" element={
               <ProtectedRoute>
                 <BusinessHours />
+              </ProtectedRoute>
+            } />
+
+            <Route path="/primeiros-passos" element={
+              <ProtectedRoute>
+                <FirstSteps />
               </ProtectedRoute>
             } />
             

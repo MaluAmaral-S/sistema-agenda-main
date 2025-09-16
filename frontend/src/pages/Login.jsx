@@ -34,13 +34,6 @@ const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
   
-  // Redirecionar se já estiver autenticado
-  useEffect(() => {
-    if (isAuthenticated) {
-      const from = location.state?.from?.pathname || '/painel';
-      navigate(from, { replace: true });
-    }
-  }, [isAuthenticated, navigate, location]);
   
   // Limpar erros quando trocar de aba
   useEffect(() => {
@@ -110,7 +103,12 @@ const Login = () => {
     
     setIsLoading(true);
     try {
-      await login(loginData);
+      const response = await login(loginData);
+      if (response.onboardingRequired) {
+        navigate('/primeiros-passos');
+      } else {
+        navigate('/painel');
+      }
     } catch (error) {
       // Erro já é tratado pelo contexto
     } finally {
@@ -127,7 +125,10 @@ const Login = () => {
     setIsLoading(true);
     try {
       const { confirmPassword, ...dataToSend } = registerData;
-      await register(dataToSend);
+      const response = await register(dataToSend);
+      if (response) {
+        navigate('/primeiros-passos');
+      }
     } catch (error) {
       // Erro já é tratado pelo contexto
     } finally {
