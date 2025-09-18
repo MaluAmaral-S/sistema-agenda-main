@@ -26,7 +26,7 @@ function App() {
     <AuthProvider>
       <Router>
         <div className="min-h-screen bg-gray-50">
-          <Toaster />
+          <Toaster position="top-right" />
           <Routes>
             {/* Rotas públicas */}
             <Route path="/" element={<Home />} />

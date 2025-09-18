@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { toast } from 'sonner';
 
 const Login = () => {
   const [activeTab, setActiveTab] = useState('login');
@@ -30,10 +31,23 @@ const Login = () => {
   
   const [errors, setErrors] = useState({});
   
-  const { login, register, isAuthenticated, error, clearError } = useAuth();
+  const { login, register, user, isAuthenticated, error, clearError } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   
+  useEffect(() => {
+    if (isAuthenticated) {
+      // Se o usuário está autenticado, mas o onboarding não foi concluído,
+      // a navegação para /primeiros-passos é forçada.
+      if (user?.onboardingCompleted === false) {
+        navigate('/primeiros-passos', { replace: true });
+      } else {
+        // Caso contrário, vai para o painel ou para a página de origem.
+        const from = location.state?.from?.pathname || '/painel';
+        navigate(from, { replace: true });
+      }
+    }
+  }, [isAuthenticated, user, navigate, location]);
   
   // Limpar erros quando trocar de aba
   useEffect(() => {
@@ -98,19 +112,15 @@ const Login = () => {
   // Handle login
   const handleLogin = async (e) => {
     e.preventDefault();
-    
     if (!validateLogin()) return;
-    
     setIsLoading(true);
     try {
-      const response = await login(loginData);
-      if (response.onboardingRequired) {
-        navigate('/primeiros-passos');
-      } else {
-        navigate('/painel');
-      }
+      await login(loginData);
+      // A navegação será tratada pelo useEffect
     } catch (error) {
-      // Erro já é tratado pelo contexto
+      toast.error(error.message || 'Ocorreu um erro. Tente novamente.', {
+        duration: 5000,
+      });
     } finally {
       setIsLoading(false);
     }
@@ -119,18 +129,16 @@ const Login = () => {
   // Handle register
   const handleRegister = async (e) => {
     e.preventDefault();
-    
     if (!validateRegister()) return;
-    
     setIsLoading(true);
     try {
       const { confirmPassword, ...dataToSend } = registerData;
-      const response = await register(dataToSend);
-      if (response) {
-        navigate('/primeiros-passos');
-      }
+      await register(dataToSend);
+      // A navegação será tratada pelo useEffect
     } catch (error) {
-      // Erro já é tratado pelo contexto
+      toast.error(error.message || 'Ocorreu um erro ao registrar. Tente novamente.', {
+        duration: 5000,
+      });
     } finally {
       setIsLoading(false);
     }
@@ -173,15 +181,6 @@ const Login = () => {
               Criar Conta
             </button>
           </div>
-
-          {/* Erro global */}
-          {error && (
-            <Alert className="mb-6 bg-red-50 border-red-200">
-              <AlertDescription className="text-red-800">
-                {error}
-              </AlertDescription>
-            </Alert>
-          )}
 
           {/* Formulário de Login */}
           {activeTab === 'login' && (
