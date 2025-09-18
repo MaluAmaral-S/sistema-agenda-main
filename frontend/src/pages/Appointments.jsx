@@ -391,7 +391,7 @@ const formatDate = (dateString) => {
                 variant="outline"
                 size="sm"
                 onClick={loadAppointments}
-                className="ml-auto"
+                className="ml-auto border-red-300 text-red-700 hover:bg-red-100 hover:text-red-800"
               >
                 Tentar novamente
               </Button>
@@ -631,29 +631,6 @@ const formatDate = (dateString) => {
         </DialogContent>
       </Dialog>
       
-      {/* Toaster para notificações */}
-      <Toaster 
-        position="top-right"
-        toastOptions={{
-          duration: 4000,
-          style: {
-            background: '#363636',
-            color: '#fff',
-          },
-          success: {
-            duration: 3000,
-            style: {
-              background: '#10b981',
-            },
-          },
-          error: {
-            duration: 5000,
-            style: {
-              background: '#ef4444',
-            },
-          },
-        }}
-      />
     </div>
   );
 };

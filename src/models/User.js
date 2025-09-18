@@ -43,11 +43,7 @@ const User = sequelize.define('User', {
   phone: {
     type: DataTypes.STRING,
     allowNull: true,
-  },
-  onboardingCompleted: {
-    type: DataTypes.BOOLEAN,
-    defaultValue: false,
-  },
+  }
 });
 
 // CORREÇÃO: Usamos 'beforeSave' para que a senha seja criptografada

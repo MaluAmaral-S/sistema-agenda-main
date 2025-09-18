@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import LoadingSpinner from '../components/common/LoadingSpinner';
-import { LayoutGrid, PlusCircle, List, Edit2, Trash2, AlertCircle, CheckCircle } from 'lucide-react';
+import { Scissors, PlusCircle, List, Edit2, Trash2, AlertCircle, CheckCircle } from 'lucide-react';
 
 const formatarMinutosParaDuracao = (minutos) => {
     if (!minutos || minutos < 1) return '00:00';
@@ -102,17 +102,17 @@ const Services = () => {
                 </div>
                 <div className="p-6">
                     <form onSubmit={handleCreateService} className="space-y-6">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <Label htmlFor="nome" className="mb-2 block">Nome do Serviço *</Label>
+                                <Label htmlFor="nome">Nome do Serviço *</Label>
                                 <Input id="nome" name="nome" required placeholder="Ex: Corte de Cabelo" />
                             </div>
                             <div>
-                                <Label htmlFor="descricao" className="mb-2 block">Descrição</Label>
+                                <Label htmlFor="descricao">Descrição</Label>
                                 <Input id="descricao" name="descricao" placeholder="Opcional" />
                             </div>
                             <div>
-                                <Label htmlFor="duracao" className="mb-2 block">Duração *</Label>
+                                <Label htmlFor="duracao">Duração *</Label>
                                 <Input 
                                     id="duracao" 
                                     name="duracao"
@@ -123,12 +123,12 @@ const Services = () => {
                                 />
                             </div>
                             <div>
-                                <Label htmlFor="preco" className="mb-2 block">Preço (R$)</Label>
+                                <Label htmlFor="preco">Preço (R$)</Label>
                                 <Input id="preco" name="preco" type="number" step="0.01" min="0" placeholder="25.00" />
                             </div>
                         </div>
                         <div className="flex justify-end">
-                            <Button type="submit" disabled={submitting} className="bg-[#704abf] hover:bg-purple-700">
+                            <Button type="submit" disabled={submitting}>
                                 {submitting ? 'A adicionar...' : 'Adicionar Serviço'}
                             </Button>
                         </div>
@@ -148,7 +148,7 @@ const Services = () => {
                         <LoadingSpinner text="A carregar serviços..." />
                     ) : services.length === 0 ? (
                         <div className="text-center py-8 text-gray-500">
-                            <LayoutGrid className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+                            <Scissors className="w-12 h-12 mx-auto mb-3 text-gray-300" />
                             <p>Nenhum serviço registado ainda.</p>
                         </div>
                     ) : (

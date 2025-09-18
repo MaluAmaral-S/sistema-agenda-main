@@ -4,7 +4,7 @@ import { apiRequest } from "../services/api";
 import { formatDateForAPI } from "../utils/dateUtils";
 import {
   CalendarCheck,
-  LayoutGrid,
+  Scissors,
   Calendar,
   Clock,
   User,
@@ -368,7 +368,7 @@ const Booking = () => {
         {currentStep === 1 && (
           <div className="bg-white rounded-xl shadow-sm border p-6 mb-6">
             <h2 className="text-2xl font-bold text-gray-900 mb-2 flex items-center">
-              <LayoutGrid className="w-6 h-6 mr-3 text-purple-600" />
+              <Scissors className="w-6 h-6 mr-3 text-purple-600" />
               Escolha o Serviço
             </h2>
             <p className="text-gray-600 mb-6">Selecione o serviço que você deseja agendar</p>
