@@ -35,10 +35,16 @@ exports.register = async (req, res) => {
       maxAge: 3600000,
     });
 
-    res.status(201).json({ 
+    res.status(201).json({
       message: 'Usuário criado com sucesso!', 
       token: token,
-      user: { id: user.id, name: user.name, email: user.email, businessName: user.businessName } 
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        businessName: user.businessName,
+        onboardingCompleted: user.onboardingCompleted
+      }
     });
     // --- FIM DA MODIFICAÇÃO ---
 
@@ -66,10 +72,16 @@ exports.login = async (req, res) => {
       secure: process.env.NODE_ENV === 'production',
       maxAge: 3600000,
     });
-    res.status(200).json({
+    res.status(201).json({
       message: 'Login bem-sucedido!', 
       token: token,
-      user: { id: user.id, name: user.name, email: user.email, businessName: user.businessName }
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        businessName: user.businessName,
+        onboardingCompleted: user.onboardingCompleted
+      }
     });
   } catch (error) {
     res.status(500).json({ message: 'Erro no servidor.', error: error.message });
