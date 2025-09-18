@@ -22,4 +22,7 @@ router.post('/verify-reset-code', authController.verifyResetCode);
 // 3. Rota para redefinir a senha (recebe token, código e nova senha)
 router.patch('/reset-password', authController.resetPassword);
 
+// Rota para marcar o onboarding como concluído
+router.patch('/complete-onboarding', authController.protect, authController.completeOnboarding);
+
 module.exports = router;

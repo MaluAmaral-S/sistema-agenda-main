@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/common/ProtectedRoute';
 import LoadingSpinner from './components/common/LoadingSpinner';
+import { Toaster } from '@/components/ui/sonner';
 
 // Páginas
 import Home from './pages/Home';
@@ -13,6 +14,7 @@ import BusinessHours from './pages/BusinessHours';
 import Plans from './pages/Plans';
 import Booking from './pages/Booking';
 import AppointmentsDemo from './pages/AppointmentsDemo';
+import FirstSteps from './pages/FirstSteps';
 
 
 
@@ -24,6 +26,7 @@ function App() {
     <AuthProvider>
       <Router>
         <div className="min-h-screen bg-gray-50">
+          <Toaster />
           <Routes>
             {/* Rotas públicas */}
             <Route path="/" element={<Home />} />
@@ -49,6 +52,12 @@ function App() {
             <Route path="/horarios" element={
               <ProtectedRoute>
                 <BusinessHours />
+              </ProtectedRoute>
+            } />
+
+            <Route path="/primeiros-passos" element={
+              <ProtectedRoute>
+                <FirstSteps />
               </ProtectedRoute>
             } />
             

@@ -66,10 +66,17 @@ exports.login = async (req, res) => {
       secure: process.env.NODE_ENV === 'production',
       maxAge: 3600000,
     });
-    res.status(200).json({ 
+    res.status(200).json({
       message: 'Login bem-sucedido!', 
       token: token,
-      user: { id: user.id, name: user.name, email: user.email, businessName: user.businessName } 
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        businessName: user.businessName,
+        onboardingCompleted: user.onboardingCompleted
+      },
+      onboardingRequired: !user.onboardingCompleted
     });
   } catch (error) {
     res.status(500).json({ message: 'Erro no servidor.', error: error.message });
@@ -285,4 +292,14 @@ exports.resetPassword = async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: 'Ocorreu um erro no servidor ao tentar redefinir a senha.' });
     }
+};
+
+exports.completeOnboarding = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    await User.update({ onboardingCompleted: true }, { where: { id: userId } });
+    res.status(200).json({ message: 'Onboarding concluído com sucesso.' });
+  } catch (error) {
+    res.status(500).json({ message: 'Erro ao atualizar o status do onboarding.', error: error.message });
+  }
 };
