@@ -10,7 +10,7 @@ import { apiRequest } from "../services/api";
 import {
   Calendar,
   CalendarCheck,
-  Scissors,
+  LayoutGrid,
   DollarSign,
   Copy,
 } from "lucide-react";
@@ -116,7 +116,7 @@ const Dashboard = () => {
                 <div className="flex items-center">
                   <div className="flex-shrink-0">
                     <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                      <Scissors className="w-6 h-6 text-purple-600" />
+                      <LayoutGrid className="w-6 h-6 text-purple-600" />
                     </div>
                   </div>
                   <div className="ml-4">

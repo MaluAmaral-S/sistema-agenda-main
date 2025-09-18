@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import LoadingSpinner from '../components/common/LoadingSpinner';
-import { Scissors, PlusCircle, List, Edit2, Trash2, AlertCircle, CheckCircle } from 'lucide-react';
+import { LayoutGrid, PlusCircle, List, Edit2, Trash2, AlertCircle, CheckCircle } from 'lucide-react';
 
 const formatarMinutosParaDuracao = (minutos) => {
     if (!minutos || minutos < 1) return '00:00';
@@ -148,7 +148,7 @@ const Services = () => {
                         <LoadingSpinner text="A carregar serviços..." />
                     ) : services.length === 0 ? (
                         <div className="text-center py-8 text-gray-500">
-                            <Scissors className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+                            <LayoutGrid className="w-12 h-12 mx-auto mb-3 text-gray-300" />
                             <p>Nenhum serviço registado ainda.</p>
                         </div>
                     ) : (
