@@ -128,7 +128,7 @@ const Services = () => {
                             </div>
                         </div>
                         <div className="flex justify-end">
-                            <Button type="submit" disabled={submitting}>
+                            <Button type="submit" disabled={submitting} className="bg-[#704abf] hover:bg-purple-700">
                                 {submitting ? 'A adicionar...' : 'Adicionar Serviço'}
                             </Button>
                         </div>

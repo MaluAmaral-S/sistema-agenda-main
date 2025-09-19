@@ -72,7 +72,7 @@ exports.login = async (req, res) => {
       secure: process.env.NODE_ENV === 'production',
       maxAge: 3600000,
     });
-    res.status(201).json({
+    res.status(200).json({
       message: 'Login bem-sucedido!', 
       token: token,
       user: {
@@ -81,7 +81,8 @@ exports.login = async (req, res) => {
         email: user.email,
         businessName: user.businessName,
         onboardingCompleted: user.onboardingCompleted
-      }
+      },
+      onboardingRequired: !user.onboardingCompleted
     });
   } catch (error) {
     res.status(500).json({ message: 'Erro no servidor.', error: error.message });

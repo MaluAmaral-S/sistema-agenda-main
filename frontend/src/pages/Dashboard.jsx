@@ -10,13 +10,12 @@ import { apiRequest } from "../services/api";
 import {
   Calendar,
   CalendarCheck,
-  LayoutGrid,
+  Scissors,
   DollarSign,
   Copy,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
 
 const Dashboard = () => {
   const { user } = useAuth();
@@ -62,9 +61,7 @@ const Dashboard = () => {
 
   const copyPublicLink = () => {
     navigator.clipboard.writeText(publicLink);
-    toast.success("Link copiado para a área de transferência!", {
-      duration: 3000,
-    });
+    alert("Link copiado para a área de transferência!");
   };
 
   if (loading) {
@@ -80,7 +77,7 @@ const Dashboard = () => {
         {activeTab === "dashboard" && (
           <div className="px-4 sm:px-6 lg:px-8 space-y-8">
             {/* --- AQUI ESTÁ A GRELHA RESPONSIVA --- */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               <div className="bg-white rounded-xl p-6 shadow-sm border cursor-pointer hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
                 <div className="flex items-center">
                   <div className="flex-shrink-0">
@@ -119,7 +116,7 @@ const Dashboard = () => {
                 <div className="flex items-center">
                   <div className="flex-shrink-0">
                     <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                      <LayoutGrid className="w-6 h-6 text-purple-600" />
+                      <Scissors className="w-6 h-6 text-purple-600" />
                     </div>
                   </div>
                   <div className="ml-4">
@@ -161,7 +158,7 @@ const Dashboard = () => {
               </p>
               <div className="mt-3 flex items-center space-x-3">
                 <Input type="text" readOnly value={publicLink} />
-                <Button onClick={copyPublicLink} className="bg-purple-600 hover:bg-purple-700">
+                <Button onClick={copyPublicLink}>
                   <Copy className="w-4 h-4 mr-2" />
                   Copiar
                 </Button>

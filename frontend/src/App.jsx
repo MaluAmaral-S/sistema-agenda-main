@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/common/ProtectedRoute';
 import LoadingSpinner from './components/common/LoadingSpinner';
-import { Toaster } from '@/components/ui/sonner';
 
 // Páginas
 import Home from './pages/Home';
@@ -25,7 +24,6 @@ function App() {
     <AuthProvider>
       <Router>
         <div className="min-h-screen bg-gray-50">
-          <Toaster position="top-right" />
           <Routes>
             {/* Rotas públicas */}
             <Route path="/" element={<Home />} />
