@@ -5,14 +5,13 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { apiRequest } from '../services/api';
-import { SUCCESS_MESSAGES, ERROR_MESSAGES } from '../utils/constants';
+import { toast } from 'sonner';
 
 const BusinessHours = () => {
   const [businessHours, setBusinessHours] = useState({});
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
 
   const daysOfWeek = [
     'Domingo',
@@ -120,7 +119,6 @@ const BusinessHours = () => {
 
   const saveBusinessHours = async () => {
     setError('');
-    setSuccess('');
 
     if (!validateHours()) {
       return;
@@ -129,11 +127,9 @@ const BusinessHours = () => {
     try {
       setSaving(true);
       await apiRequest.post('/business-hours', { businessHours });
-      setSuccess('Horários de funcionamento salvos com sucesso!');
-
-      // Limpar mensagem de sucesso após 3 segundos
-      setTimeout(() => setSuccess(''), 3000);
+      toast.success('Horários de funcionamento salvos com sucesso!');
     } catch (error) {
+      toast.error(error.message || 'Erro ao salvar horários de funcionamento.');
       setError(error.message || 'Erro ao salvar horários de funcionamento.');
     } finally {
       setSaving(false);
@@ -171,15 +167,6 @@ const BusinessHours = () => {
             <AlertCircle className="h-4 w-4 text-red-600" />
             <AlertDescription className="text-red-800">
               {error}
-            </AlertDescription>
-          </Alert>
-        )}
-
-        {success && (
-          <Alert className="mb-6 bg-green-50 border-green-200">
-            <AlertCircle className="h-4 w-4 text-green-600" />
-            <AlertDescription className="text-green-800">
-              {success}
             </AlertDescription>
           </Alert>
         )}
@@ -295,4 +282,3 @@ const BusinessHours = () => {
 };
 
 export default BusinessHours;
-
